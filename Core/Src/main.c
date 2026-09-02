@@ -43,6 +43,9 @@
 
 /* USER CODE BEGIN PV */
 
+uint32_t pasos=0;//variable para el retardo por debbuger
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,6 +57,56 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void delay_us_dwt_init()
+{
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    pasos=(HAL_RCC_GetSysClockFreq()/1000000);//le el cristal pasa a us
+
+}
+
+//retardo por debbuger
+void delay_us_dwt(uint32_t reta)
+{
+
+DWT->CYCCNT=0;
+while( DWT->CYCCNT<=pasos*reta);//multiplica por us
+}
+
+void Sound_play(uint32_t frec,uint32_t dura)
+{
+	uint32_t dela=500000/frec;//  la mitad de un mega
+	uint32_t  repe=frec*dura/1000;// calcula cuantas veces se repite
+
+		while(repe--)
+	  {
+	HAL_GPIO_WritePin(parlante_GPIO_Port, parlante_Pin,1);
+	delay_us_dwt(dela);
+	  HAL_GPIO_WritePin(parlante_GPIO_Port, parlante_Pin,0);
+	  delay_us_dwt(dela);
+      }
+
+}
+
+void salsa(void)
+{
+  Sound_play(440,100);
+  Sound_play(440,100);
+  Sound_play(440,100);
+  Sound_play(349,100);
+  Sound_play(440,100);
+  Sound_play(349,100);
+  Sound_play(440,100);
+  Sound_play(440,100);
+  Sound_play(440,100);
+  Sound_play(349,100);
+  Sound_play(440,100);
+  Sound_play(349,100);
+  HAL_Delay(100);
+  Sound_play(440,100);
+}
+
 
 /* USER CODE END 0 */
 
@@ -87,13 +140,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+    delay_us_dwt_init();//inicializa el retardo por debbuger
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+    salsa();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -164,18 +219,18 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(parlante_GPIO_Port, parlante_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, MARIA1_Pin|MARIA2_Pin|MARIA3_Pin|MARIA4_Pin
                           |MARIA5_Pin|MARIA6_Pin|MARIA7_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : LED_Pin */
-  GPIO_InitStruct.Pin = LED_Pin;
+  /*Configure GPIO pin : parlante_Pin */
+  GPIO_InitStruct.Pin = parlante_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(parlante_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : MARIA1_Pin MARIA2_Pin MARIA3_Pin MARIA4_Pin
                            MARIA5_Pin MARIA6_Pin MARIA7_Pin */
