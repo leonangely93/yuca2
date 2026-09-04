@@ -89,21 +89,25 @@ void Sound_play(uint32_t frec,uint32_t dura)
 
 }
 
-void salsa(void)
+void melodia1 (void)
 {
-  Sound_play(440,100);
-  Sound_play(440,100);
-  Sound_play(440,100);
-  Sound_play(349,100);
-  Sound_play(440,100);
-  Sound_play(349,100);
-  Sound_play(440,100);
-  Sound_play(440,100);
-  Sound_play(440,100);
-  Sound_play(349,100);
-  Sound_play(440,100);
-  Sound_play(349,100);
-  HAL_Delay(100);
+  Sound_play(330,300);
+  Sound_play(330,300);
+  Sound_play(349,300);
+  Sound_play(392,300);
+
+
+  Sound_play(392,300);
+  Sound_play(349,300);
+  Sound_play(330,300);
+  Sound_play(294,300);
+
+  Sound_play(262,300);
+  Sound_play(262,300);
+  Sound_play(294,300);
+  Sound_play(330,300);
+
+  HAL_Delay(300);
   Sound_play(440,100);
 }
 
@@ -148,7 +152,7 @@ int main(void)
   while (1)
   {
 
-    salsa();
+    melodia1();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
